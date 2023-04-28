@@ -9,11 +9,8 @@ from sklearn.model_selection import train_test_split
 VEHICLES= '/content/data/vehicles'
 NONVEHICLES= '/content/data/nonvehicles'
 
-
 vehicleList = os.listdir(VEHICLES)
 nonvehicleList = os.listdir(NONVEHICLES)
-
-
 
 
 print('Number of vehicle images:', len(vehicleList))
@@ -22,20 +19,15 @@ Base = '/tmp/'
 Train = os.path.join(Base, 'train')
 Test = os.path.join(Base, 'test')
 
-
 Vehicle_Train = os.path.join(Train, 'vehicles')
 Nonvehicle_Train = os.path.join(Train, 'non-vehicles')
-
 
 Vehicle_Test = os.path.join(Test, 'vehicles')
 Nonvehicle_Test = os.path.join(Test, 'non-vehicles')
 train_size = .8
-
-
 train_vehicles, test_vehicles = train_test_split(
     vehicleList, train_size=train_size, shuffle=True, random_state=1
 )
-
 
 train_non_vehicles, test_non_vehicles = train_test_split(
     nonvehicleList, train_size=train_size, shuffle=True, random_state=1
@@ -43,7 +35,7 @@ train_non_vehicles, test_non_vehicles = train_test_split(
 def move_images(image_list, old_dir_path, new_dir_path):
     if not os.path.exists(new_dir_path):
         os.makedirs(new_dir_path)
-    
+
     for file_name in image_list:
         shutil.copy(
             os.path.join(old_dir_path, file_name),
@@ -53,17 +45,13 @@ def move_images(image_list, old_dir_path, new_dir_path):
 move_images(train_vehicles, VEHICLES, Vehicle_Train)
 move_images(train_non_vehicles, NONVEHICLES, Nonvehicle_Train)
 
-
 move_images(test_vehicles, VEHICLES, Vehicle_Test)
 move_images(test_non_vehicles, NONVEHICLES, Nonvehicle_Test)
 Img_Size= 256
 
-
 train_generator = tf.keras.preprocessing.image.ImageDataGenerator(
     rescale=1./255
 )
-
-
 
 
 train_generator = train_generator.flow_from_directory(
@@ -72,15 +60,9 @@ train_generator = train_generator.flow_from_directory(
     shuffle=True,
     class_mode='binary'
 )
-
-
-
-
 test_datagen = tf.keras.preprocessing.image.ImageDataGenerator(
     rescale=1./255
 )
-
-
 
 
 test_generator = test_datagen.flow_from_directory(
@@ -97,9 +79,7 @@ model = tf.keras.Sequential([
     layers.Dense(1, activation='sigmoid')
 ])
 
-
 model.summary()
-
 
 model.compile(
     optimizer='adam',
@@ -110,7 +90,6 @@ early_stopping = tf.keras.callbacks.EarlyStopping(
     monitor='val_loss',
     patience=5
 )
-
 
 model_path = 'vehicle_detection.h5'
 model_checkpoint = tf.keras.callbacks.ModelCheckpoint(
@@ -130,10 +109,8 @@ plt.plot(history.history['val_loss'], label='Validation Loss')
 plt.legend()
 plt.show()
 
-
 plt.plot(history.history['accuracy'], label='Train Accuracy')
 plt.plot(history.history['val_accuracy'], label='Validation Accuracy')
 plt.legend()
 plt.show()
-
 
